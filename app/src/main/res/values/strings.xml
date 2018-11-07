@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">苏爱宝</string>
+    <string name="action_settings">设置</string>
+    <string name="welcomeText">欢迎使用苏爱宝</string>
+    <string name="buttonUserName">用户管理</string>
+    <string name="buttonExit">退出</string>
+    <string name="buttonSave">保存</string>
+    <string name="buttonDiscard">丢弃</string>
+    <string name="buttonSendMessage">发信</string>
+</resources>
