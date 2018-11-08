@@ -10,29 +10,30 @@ import java.util.Date;
 import java.util.List;
 
 public class CSV {
-    public class Guest {
+
+    public static class Guest {
         public String name;
         public boolean gender;
         public String phone;
         public String birthday;
     }
-    public class UtilStrClass {
+    public static class UtilStrClass {
         public String peopleCount = "The count of the people:";
         public String name = "Guest name";
         public String gender = "Is his/her female?";
         public String phone = "Phone number";
         public String birthday = "Birthday";
     }
-    private UtilStrClass UtilStr;
-    public Guest[] guests;
+    public static UtilStrClass UtilStr = new UtilStrClass();
+    public static Guest[] guests;
 
-    private String GenderToStringConverter(boolean genderBoolean) {
-        return genderBoolean ? "Female" : "Male";
+    public static String GenderToStringConverter(boolean genderBoolean) {
+        return genderBoolean ? "Yes" : "No";
     }
-    private boolean StringToGenderConverter(String genderString) {
-        return (genderString == "Male") ? false : true;
+    private static boolean StringToGenderConverter(String genderString) {
+        return (genderString == "No") ? false : true;
     }
-    private String DateToStringConverter(Date date) {
+    private static String DateToStringConverter(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         String month = String.valueOf(calendar.get(Calendar.MONTH));
@@ -42,7 +43,7 @@ public class CSV {
         return month + day;
     }
 
-    public String Read(String filePath) {
+    public static String Read(String filePath) throws IOException {
         guests = ReadRaw(filePath);
         String result = new String();
         for (int t = 0; t < guests.length; t++) {
@@ -51,29 +52,40 @@ public class CSV {
         return result;
     }
 
-    public Guest[] ReadRaw(String filePath)
-    {
+    public static Guest[] ReadRaw(String filePath) throws IOException {
         Path fp = Paths.get(filePath);
         List<String> strA = new ArrayList();
-        try {
-            strA = Files.readAllLines(fp);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println(strA.get(0));
+        strA = Files.readAllLines(fp);
         int pN = Integer.valueOf(strA.get(0).split(",")[1]);
         Guest[] result = new Guest[pN];
+        //List<Guest> result = new ArrayList<>();
         for (int lineNumber = 2; lineNumber < pN + 2; lineNumber++) {
             String[] tmp = strA.get(lineNumber).split(",");
+            /*
             result[lineNumber - 2].name = tmp[0];
             result[lineNumber - 2].gender = Boolean.valueOf(tmp[1]);
             result[lineNumber - 2].phone = String.valueOf(tmp[2]);
             result[lineNumber - 2].birthday = String.valueOf(tmp[3]);
+            */
+            /*
+            Guest tmpG = new Guest();
+            tmpG.name = tmp[0];
+            tmpG.gender = Boolean.valueOf(tmp[1]);
+            tmpG.phone = String.valueOf(tmp[2]);
+            tmpG.birthday = String.valueOf(tmp[3]);
+            result.set(lineNumber - 2, tmpG);
+            */
+            Guest tmpG = new Guest();
+            tmpG.name = tmp[0];
+            tmpG.gender = Boolean.valueOf(tmp[1]);
+            tmpG.phone = String.valueOf(tmp[2]);
+            tmpG.birthday = String.valueOf(tmp[3]);
+            result[lineNumber - 2] = tmpG;
         }
         return result;
     }
 
-    public void Write(String filePath, String context) {
+    public static void Write(String filePath, String context) throws IOException {
         String[] strA = context.split("\n");
         int pN = strA.length;
         guests = new Guest[pN - 1];
@@ -89,7 +101,7 @@ public class CSV {
         WriteRaw(filePath);
     }
 
-    private void WriteRaw(String filePath) {
+    private static void WriteRaw(String filePath) throws IOException {
         Path fp = Paths.get(filePath);
         int totalLines = guests.length + 1;
         List<String> result = new ArrayList<>();
@@ -98,24 +110,16 @@ public class CSV {
         for (int pCount = 2; pCount < totalLines + 1; pCount++) {
             result.set(pCount, guests[pCount - 2].name + "," + guests[pCount - 2].gender + "," + guests[pCount - 2].phone + "," + guests[pCount - 2].birthday);
         }
-        try {
-            Files.delete(fp);
-            Files.write(fp, result);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Files.delete(fp);
+        Files.write(fp, result);
     }
-
-    public void CreateNew(String filePath) {
+    public static void CreateNew(String filePath) throws IOException {
         Path fp = Paths.get(filePath);
         List<String> result = new ArrayList<>();
-        result.set(0, UtilStr.peopleCount + ",1");
-        result.set(1, UtilStr.name + "," + UtilStr.gender + "," + UtilStr.phone + "," + UtilStr.birthday);
-        result.set(2, "CrystalComputerStudio,True,0,20180828");
-        try {
-            Files.write(fp, result);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        result.add(UtilStr.peopleCount + ",1");
+        result.add(UtilStr.name + "," + UtilStr.gender + "," + UtilStr.phone + "," + UtilStr.birthday);
+        result.add("CrystalComputerStudio,True,0,0828");
+        Files.createFile(fp);
+        Files.write(fp, result);
     }
 }
