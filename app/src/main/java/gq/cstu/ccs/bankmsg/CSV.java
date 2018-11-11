@@ -1,10 +1,13 @@
 package gq.cstu.ccs.bankmsg;
 
+import android.content.Context;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +34,7 @@ public class CSV {
         return genderBoolean ? "Yes" : "No";
     }
     private static boolean StringToGenderConverter(String genderString) {
-        return (genderString == "No") ? false : true;
+        return (genderString == "Yes");
     }
     private static String DateToStringConverter(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -85,34 +88,45 @@ public class CSV {
         return result;
     }
 
-    public static void Write(String filePath, String context) throws IOException {
-        String[] strA = context.split("\n");
+    public static void Write(Context context, String filePath, String content) throws IOException {
+        String[] strA = content.split("\n");
         int pN = strA.length;
-        guests = new Guest[pN - 1];
-        String[] tmp;
-        for (int lC = 0; lC < pN - 1; lC++) {
-            strA[lC] = strA[lC].replace("Name", "").replace("Gender", "").replace("Phone","").replace("Birthday","").replace(":","").replace(" ","").replace(",","");
-            tmp = strA[lC].split("|");
-            guests[lC].name = tmp[0];
-            guests[lC].gender = StringToGenderConverter(tmp[1]);
-            guests[lC].phone = tmp[2];
-            guests[lC].birthday = tmp[3];
+        guests = new Guest[pN];
+        Guest tmpG = new Guest();
+        List<String> tmp = new ArrayList<>();
+        for (int lC = 0; lC < pN; lC++) {
+            //strA[lC] = strA[lC].replace("Name", "").replace("Gender", "").replace("Phone","").replace("Birthday","").replace(":","").replace(" ","").replace(",","");
+            tmp = Arrays.asList(strA[lC].split("\\|BRK\\|"));
+            tmpG.name = tmp.get(0);
+            tmpG.gender = StringToGenderConverter(tmp.get(1));
+            tmpG.phone = tmp.get(2);
+            tmpG.birthday = tmp.get(3);
+            guests[lC] = tmpG;
         }
-        WriteRaw(filePath);
+        WriteRaw(context, filePath);
     }
 
-    private static void WriteRaw(String filePath) throws IOException {
+    private static void WriteRaw(Context context, String filePath) throws IOException {
         Path fp = Paths.get(filePath);
         int totalLines = guests.length + 1;
         List<String> result = new ArrayList<>();
-        result.set(0, UtilStr.peopleCount + "," + String.valueOf(totalLines - 1));
-        result.set(1, UtilStr.name + "," + UtilStr.gender + "," + UtilStr.phone + "," + UtilStr.birthday);
+        //String result = new String();
+        //result += UtilStr.peopleCount + "," + String.valueOf(totalLines - 1) + '\n';
+        //result += UtilStr.name + "," + UtilStr.gender + "," + UtilStr.phone + "," + UtilStr.birthday + '\n';
+        result.add(UtilStr.peopleCount + "," + String.valueOf(totalLines - 1));
+        result.add(UtilStr.name + "," + UtilStr.gender + "," + UtilStr.phone + "," + UtilStr.birthday);
         for (int pCount = 2; pCount < totalLines + 1; pCount++) {
-            result.set(pCount, guests[pCount - 2].name + "," + guests[pCount - 2].gender + "," + guests[pCount - 2].phone + "," + guests[pCount - 2].birthday);
+            //result += guests[pCount - 2].name + "," + guests[pCount - 2].gender + "," + guests[pCount - 2].phone + "," + guests[pCount - 2].birthday + '\n';
+            result.add(guests[pCount - 2].name + "," + guests[pCount - 2].gender + "," + guests[pCount - 2].phone + "," + guests[pCount - 2].birthday);
         }
         Files.delete(fp);
+        Files.createFile(fp);
+        //OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(filePath, Context.MODE_PRIVATE));
+        //outputStreamWriter.write(result);
+        //outputStreamWriter.close();
         Files.write(fp, result);
     }
+
     public static void CreateNew(String filePath) throws IOException {
         Path fp = Paths.get(filePath);
         List<String> result = new ArrayList<>();

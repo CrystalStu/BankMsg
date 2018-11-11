@@ -38,14 +38,14 @@ public class UserManagerActivity extends AppCompatActivity {
             System.exit(0);
         }
 
-        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File dlPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        final String path = dlPath + "/BankMsg.db";
 
         try {
-            if (!Files.exists(Paths.get(path + "/BankMsg.db"))) {
-                CSV.CreateNew(path + "/BankMsg.db");
+            if (!Files.exists(Paths.get(path))) {
+                CSV.CreateNew(path);
             }
-
-            CSV.Read(path + "/BankMsg.db");
+            CSV.Read(path);
         } catch (IOException e) {
             Tools.exceptionDialog(getApplicationContext(), "I/O ERROR OCCURRED \n", e.getMessage());
             finish();
@@ -65,7 +65,7 @@ public class UserManagerActivity extends AppCompatActivity {
         floatingActionButtonAddRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TableRow tableRow = new TableRow(UserManagerActivity.this);
+                final TableRow tableRow = new TableRow(UserManagerActivity.this);
                 TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
                 tableRow.setLayoutParams(layoutParams);
                 TextView index = new TextView(UserManagerActivity.this);
@@ -79,11 +79,20 @@ public class UserManagerActivity extends AppCompatActivity {
                 phone.setText("0");
                 EditText birthday = new EditText(UserManagerActivity.this);
                 birthday.setText("0828");
+                FloatingActionButton floatingActionButtonDel = new FloatingActionButton(UserManagerActivity.this);
+                floatingActionButtonDel.setImageResource(R.drawable.ic_delete_black_24dp);
+                floatingActionButtonDel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        tableLayoutUser.removeView(tableRow);
+                    }
+                });
                 tableRow.addView(index);
                 tableRow.addView(name);
                 tableRow.addView(gender);
                 tableRow.addView(phone);
                 tableRow.addView(birthday);
+                tableRow.addView(floatingActionButtonDel);
                 tableLayoutUser.addView(tableRow);
             }
         });
@@ -101,7 +110,49 @@ public class UserManagerActivity extends AppCompatActivity {
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // implementation for saving
+                String totalStr = new String();
+                for(int currentIndex = 1; currentIndex < tableLayoutUser.getChildCount(); currentIndex++) {
+                    TableRow currentRow = (TableRow) tableLayoutUser.getChildAt(currentIndex);
+                    EditText name = (EditText) currentRow.getChildAt(1);
+                    EditText gender = (EditText) currentRow.getChildAt(2);
+                    EditText phone = (EditText) currentRow.getChildAt(3);
+                    EditText birthday = (EditText) currentRow.getChildAt(4);
+                    String nameStr = name.getText().toString();
+                    String genderStr = gender.getText().toString();
+                    String phoneStr = phone.getText().toString();
+                    String birthdayStr = birthday.getText().toString();
+                    if(nameStr.contains("|BRK|") || nameStr.contains(",")) {
+                        Tools.exceptionToast(getApplicationContext(), "Invalid Format");
+                        //Tools.exceptionDialog(getApplicationContext(), "Invalid Format", "Name cannot contain | or ,.");
+                        return;
+                    }
+                    if(genderStr == "Yes" || genderStr == "No") {
+                        Tools.exceptionToast(getApplicationContext(), "Invalid Format");
+                        //Tools.exceptionDialog(getApplicationContext(), "Invalid Format", "Gender must be Yes or No.");
+                        return;
+                    }
+                    char[] phoneArray = phoneStr.toCharArray();
+                    for(int currentIndexOfPhone = 0; currentIndexOfPhone < phoneStr.length(); currentIndexOfPhone++) {
+                        if(phoneArray[currentIndexOfPhone] < '0' || phoneArray[currentIndexOfPhone] > '9') {
+                            Tools.exceptionToast(getApplicationContext(), "Invalid Format");
+                            //Tools.exceptionDialog(getApplicationContext(), "Invalid Format", "Phone must be only numbers.");
+                            return;
+                        }
+                    }
+                    if(birthdayStr.length() != 4) {
+                        Tools.exceptionToast(getApplicationContext(), "Invalid Format");
+                        //Tools.exceptionDialog(getApplicationContext(), "Invalid Format", "Birthday must be 4 numbers (MM-DD).");
+                        return;
+                    }
+                    String conclusionStr = nameStr + "|BRK|" + genderStr + "|BRK|" + phoneStr + "|BRK|" + birthdayStr + '\n';
+                    totalStr += conclusionStr;
+                }
+                try {
+                    CSV.Write(getApplicationContext(), path, totalStr);
+                } catch (IOException e) {
+                    Tools.exceptionDialog(getApplicationContext(), "I/O ERROR OCCURRED \n", e.getMessage());
+                    finish();
+                }
                 finish();
             }
         });
@@ -120,16 +171,19 @@ public class UserManagerActivity extends AppCompatActivity {
             phone.setText(CSV.UtilStr.phone);
             TextView birthday = new TextView(this);
             birthday.setText(CSV.UtilStr.birthday);
+            TextView del = new TextView(this);
+            del.setText("Delete");
             tableRow.addView(index);
             tableRow.addView(name);
             tableRow.addView(gender);
             tableRow.addView(phone);
             tableRow.addView(birthday);
+            tableRow.addView(del);
             tableLayoutUser.addView(tableRow);
         }
 
         for(int line = 0; line < CSV.guests.length; line++) {
-            TableRow tableRow = new TableRow(this);
+            final TableRow tableRow = new TableRow(this);
             TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
             tableRow.setLayoutParams(layoutParams);
             TextView index = new TextView(this);
@@ -143,11 +197,20 @@ public class UserManagerActivity extends AppCompatActivity {
             phone.setText(CSV.guests[line].phone);
             EditText birthday = new EditText(this);
             birthday.setText(CSV.guests[line].birthday);
+            FloatingActionButton floatingActionButtonDel = new FloatingActionButton(this);
+            floatingActionButtonDel.setImageResource(R.drawable.ic_delete_black_24dp);
+            floatingActionButtonDel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tableLayoutUser.removeView(tableRow);
+                }
+            });
             tableRow.addView(index);
             tableRow.addView(name);
             tableRow.addView(gender);
             tableRow.addView(phone);
             tableRow.addView(birthday);
+            if(line != 0) tableRow.addView(floatingActionButtonDel);
             tableLayoutUser.addView(tableRow);
         }
     }
