@@ -34,7 +34,7 @@ public class CSV {
         return genderBoolean ? "Yes" : "No";
     }
     private static boolean StringToGenderConverter(String genderString) {
-        return (genderString == "Yes");
+        return (genderString.toLowerCase().equals("yes"));
     }
     private static String DateToStringConverter(Date date) {
         Calendar calendar = Calendar.getInstance();

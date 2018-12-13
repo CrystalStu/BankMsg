@@ -27,29 +27,8 @@ public class UserManagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_manager);
         getSupportActionBar().setTitle("用户管理");
 
-        String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-        requestPermissions(permissions, 101);
-
-        while(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            Tools.exceptionToast(getApplicationContext(), "No permission \n");
-            requestPermissions(permissions, 101);
-            finish();
-            System.exit(0);
-        }
-
         File dlPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         final String path = dlPath + "/BankMsg.db";
-
-        try {
-            if (!Files.exists(Paths.get(path))) {
-                CSV.CreateNew(path);
-            }
-            CSV.Read(path);
-        } catch (IOException e) {
-            Tools.exceptionDialog(getApplicationContext(), "I/O ERROR OCCURRED \n", e.getMessage());
-            finish();
-        }
 
         Button buttonDiscard = findViewById(R.id.buttonDiscard);
         buttonDiscard.setOnClickListener(new View.OnClickListener() {
@@ -150,7 +129,8 @@ public class UserManagerActivity extends AppCompatActivity {
                 try {
                     CSV.Write(getApplicationContext(), path, totalStr);
                 } catch (IOException e) {
-                    Tools.exceptionDialog(getApplicationContext(), "I/O ERROR OCCURRED \n", e.getMessage());
+                    Tools.exceptionSave(getWindow().getDecorView().findViewById(android.R.id.content));
+                    // Tools.exceptionDialog(getApplicationContext(), "I/O ERROR OCCURRED \n", e.getMessage());
                     finish();
                 }
                 finish();
