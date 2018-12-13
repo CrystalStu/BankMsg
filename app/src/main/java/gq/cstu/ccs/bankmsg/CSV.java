@@ -92,11 +92,11 @@ public class CSV {
         String[] strA = content.split("\n");
         int pN = strA.length;
         guests = new Guest[pN];
-        Guest tmpG = new Guest();
         List<String> tmp = new ArrayList<>();
         for (int lC = 0; lC < pN; lC++) {
             //strA[lC] = strA[lC].replace("Name", "").replace("Gender", "").replace("Phone","").replace("Birthday","").replace(":","").replace(" ","").replace(",","");
             tmp = Arrays.asList(strA[lC].split("\\|BRK\\|"));
+            Guest tmpG = new Guest();
             tmpG.name = tmp.get(0);
             tmpG.gender = StringToGenderConverter(tmp.get(1));
             tmpG.phone = tmp.get(2);
