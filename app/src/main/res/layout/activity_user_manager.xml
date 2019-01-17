@@ -13,7 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="8dp">
@@ -22,7 +22,8 @@
                 android:id="@+id/TableLayoutUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:shrinkColumns="1"></TableLayout>
+                android:shrinkColumns="1"
+                tools:backgroundTint="@android:color/holo_blue_dark"></TableLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,7 +44,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:clickable="true"
-                    app:srcCompat="@drawable/ic_add_black_24dp" />
+                    app:backgroundTint="@android:color/holo_orange_dark"
+                    app:srcCompat="@drawable/ic_add" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/floatingActionButtonDelRow"
@@ -51,7 +53,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:clickable="true"
-                    app:srcCompat="@drawable/ic_delete_sweep_black_24dp" />
+                    app:backgroundTint="@android:color/holo_red_dark"
+                    app:srcCompat="@drawable/ic_delete_sweep" />
 
                 <Button
                     android:id="@+id/buttonSave"

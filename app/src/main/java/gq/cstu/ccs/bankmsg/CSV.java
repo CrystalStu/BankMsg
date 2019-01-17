@@ -21,11 +21,11 @@ public class CSV {
         public String birthday;
     }
     public static class UtilStrClass {
-        public String peopleCount = "The count of the people:";
-        public String name = "Guest name";
-        public String gender = "Is his/her female?";
-        public String phone = "Phone number";
-        public String birthday = "Birthday";
+        public String peopleCount = "人数";
+        public String name = "客户名";
+        public String gender = "是否为女性";
+        public String phone = "电话号码";
+        public String birthday = "生日";
     }
     public static UtilStrClass UtilStr = new UtilStrClass();
     public static Guest[] guests;
@@ -61,23 +61,8 @@ public class CSV {
         strA = Files.readAllLines(fp);
         int pN = Integer.valueOf(strA.get(0).split(",")[1]);
         Guest[] result = new Guest[pN];
-        //List<Guest> result = new ArrayList<>();
         for (int lineNumber = 2; lineNumber < pN + 2; lineNumber++) {
             String[] tmp = strA.get(lineNumber).split(",");
-            /*
-            result[lineNumber - 2].name = tmp[0];
-            result[lineNumber - 2].gender = Boolean.valueOf(tmp[1]);
-            result[lineNumber - 2].phone = String.valueOf(tmp[2]);
-            result[lineNumber - 2].birthday = String.valueOf(tmp[3]);
-            */
-            /*
-            Guest tmpG = new Guest();
-            tmpG.name = tmp[0];
-            tmpG.gender = Boolean.valueOf(tmp[1]);
-            tmpG.phone = String.valueOf(tmp[2]);
-            tmpG.birthday = String.valueOf(tmp[3]);
-            result.set(lineNumber - 2, tmpG);
-            */
             Guest tmpG = new Guest();
             tmpG.name = tmp[0];
             tmpG.gender = Boolean.valueOf(tmp[1]);
@@ -94,7 +79,6 @@ public class CSV {
         guests = new Guest[pN];
         List<String> tmp = new ArrayList<>();
         for (int lC = 0; lC < pN; lC++) {
-            //strA[lC] = strA[lC].replace("Name", "").replace("Gender", "").replace("Phone","").replace("Birthday","").replace(":","").replace(" ","").replace(",","");
             tmp = Arrays.asList(strA[lC].split("\\|BRK\\|"));
             Guest tmpG = new Guest();
             tmpG.name = tmp.get(0);
@@ -110,20 +94,13 @@ public class CSV {
         Path fp = Paths.get(filePath);
         int totalLines = guests.length + 1;
         List<String> result = new ArrayList<>();
-        //String result = new String();
-        //result += UtilStr.peopleCount + "," + String.valueOf(totalLines - 1) + '\n';
-        //result += UtilStr.name + "," + UtilStr.gender + "," + UtilStr.phone + "," + UtilStr.birthday + '\n';
         result.add(UtilStr.peopleCount + "," + String.valueOf(totalLines - 1));
         result.add(UtilStr.name + "," + UtilStr.gender + "," + UtilStr.phone + "," + UtilStr.birthday);
         for (int pCount = 2; pCount < totalLines + 1; pCount++) {
-            //result += guests[pCount - 2].name + "," + guests[pCount - 2].gender + "," + guests[pCount - 2].phone + "," + guests[pCount - 2].birthday + '\n';
             result.add(guests[pCount - 2].name + "," + guests[pCount - 2].gender + "," + guests[pCount - 2].phone + "," + guests[pCount - 2].birthday);
         }
         Files.delete(fp);
         Files.createFile(fp);
-        //OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(filePath, Context.MODE_PRIVATE));
-        //outputStreamWriter.write(result);
-        //outputStreamWriter.close();
         Files.write(fp, result);
     }
 

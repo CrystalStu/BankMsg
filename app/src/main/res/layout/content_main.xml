@@ -37,6 +37,18 @@
             tools:layout_editor_absoluteY="49dp" />
 
         <Button
+            android:id="@+id/buttonHelp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/buttonHelp" />
+
+        <Button
+            android:id="@+id/buttonAbout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/buttonAbout" />
+
+        <Button
             android:id="@+id/buttonExit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -3,16 +3,16 @@ package gq.cstu.ccs.bankmsg;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,9 +23,20 @@ import static gq.cstu.ccs.bankmsg.SendMessage.BulkSending;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
+    public void setStatusBar(boolean navi) {
+        // From https://blog.csdn.net/Dovar_66/article/details/52688313
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.TRANSPARENT);
+        if (navi) {
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN//状态栏不会被隐藏但activity布局会扩展到状态栏所在位置
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION//导航栏不会被隐藏但activity布局会扩展到导航栏所在位置
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        } else {
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        }
     }
 
     @Override
@@ -35,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+        String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.SEND_SMS};
         requestPermissions(permissions, 101);
 
         while(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -60,14 +71,6 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BulkSending(v);
-            }
-        });
-
         Button buttonExit = findViewById(R.id.buttonExit);
         buttonExit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,8 +83,7 @@ public class MainActivity extends AppCompatActivity {
         buttonUserManage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent ActivityUserManager = new Intent(MainActivity.this, UserManagerActivity.class);
-                startActivity(ActivityUserManager);
+                startActivity(new Intent(MainActivity.this, UserManagerActivity.class));
             }
         });
 
@@ -93,36 +95,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Example of a call to a native method
-        //TextView tv = (TextView) findViewById(R.id.sample_text);
-        //tv.setText(stringFromJNI());
+        Button buttonHelp = findViewById(R.id.buttonHelp);
+        buttonHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, HelpActivity.class));
+            }
+        });
+
+        Button buttonAbout = findViewById(R.id.buttonAbout);
+        buttonAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AboutActivity.class));
+            }
+        });
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
 }

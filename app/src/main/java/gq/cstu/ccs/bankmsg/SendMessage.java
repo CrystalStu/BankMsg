@@ -22,7 +22,7 @@ public class SendMessage {
     }
 
     private static void SendToClient(String name, String phone) {
-        String message = name + "总，您好！我是，在这特别的日子里祝您生日快乐！祝福您事业顺利、阖家幸福安康！";
+        String message = name + "总，您好！在这特别的日子里祝您生日快乐！祝福您事业顺利、阖家幸福安康！";
         Send(message, phone);
     }
 

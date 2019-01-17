@@ -2,9 +2,33 @@
     <string name="app_name">苏爱宝</string>
     <string name="action_settings">设置</string>
     <string name="welcomeText">欢迎使用苏爱宝</string>
-    <string name="buttonUserName">用户管理</string>
+    <string name="buttonUserName">客户管理</string>
     <string name="buttonExit">退出</string>
     <string name="buttonSave">保存</string>
     <string name="buttonDiscard">丢弃</string>
     <string name="buttonSendMessage">发信</string>
+    <string name="buttonHelp">帮助</string>
+    <string name="buttonAbout">关于</string>
+    <string name="helpText">
+        您好，欢迎使用苏爱宝。\n
+        在<b>主界面</b>中，有5个按钮：<i>发信</i>、<i>客户管理</i>、<i>帮助</i>、<i>关于</i>和<i>退出</i>，下面我会给您讲解这些按钮的用法：\n
+        <b>发信</b>：点击之后，系统会按照<i>客户管理</i>中设置好的名字和生日发送生日祝福短信。\n
+        <b>客户管理</b>：\n
+            \t点击之后会弹出一个新页面。\n
+            \t您可以点击<i>加号按钮</i>来添加一行用户信息。\n
+            \t也可以使用每一行用户信息右侧的<i>删除按钮</i>来删除一行用户信息。\n
+            \t单击您要编辑的文本来编辑用户信息。\n
+            \t使用手机上的返回键或<i>丢弃</i>按钮来放弃更改。\n
+            \t单击<i>保存</i>按钮来保存更改。\n
+        <b>帮助</b>：您可以浏览本页面，并使用手机上的返回键返回<i>主界面</i>。\n
+        <b>关于</b>：您可以获得关于作者的信息。\n
+        <b>退出</b>：您可以通过这个按钮或者在<i>主界面</i>使用返回键来退出这个程序。\n
+    </string>
+    <string name="aboutText">
+        <b>关于</b>\n\n
+        版权所有 © 2019 Crystal计算机工作室\n
+        Copyright by © 2019 Crystal Computer Studio, All rights reserved.\n\n
+        <i>主要开发人员</i>：\n
+            \tTURX（涂睿轩）：全部\n
+    </string>
 </resources>
